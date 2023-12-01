@@ -103,7 +103,7 @@ def lookup_gallery(file,db,parent):
 def findFilePath(id):
     scene=graphql.getScene(id)
     if scene:
-        return scene["path"]
+        return scene["files"][0]["path"]
     log.error("Error connecting to api")
     print("{}")
     sys.exit()
