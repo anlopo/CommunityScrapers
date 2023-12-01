@@ -29,6 +29,8 @@ except ModuleNotFoundError:
     If you have a password on your instance you need to specify the api key by adding it to py_common/config.py
    '''
 
+mediatype = "NONE"
+
 def lookup_scene(file,db,parent):
     log.info(f"using database: {db.name}  {file.name}")
     conn = sqlite3.connect(db, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
@@ -39,18 +41,23 @@ def lookup_scene(file,db,parent):
     #check for each api_type the right tables
     api_type = str(row[0])
     if api_type == 'Posts':
+        mediatype = "Posts"
         c.execute('select posts.post_id,posts.text,medias.link,posts.created_at from posts,medias where posts.post_id=medias.post_id and medias.filename=?',(file.name,))
     elif api_type == "Stories":
+        mediatype = "Stories"
         c.execute('select posts.post_id,posts.text,medias.link,posts.created_at from stories as posts,medias where posts.post_id=medias.post_id and medias.filename=?',(file.name,))
     elif api_type == "Messages":
+        mediatype = "Messagees"
         c.execute('select posts.post_id,posts.text,medias.link,posts.created_at from messages as posts,medias where posts.post_id=medias.post_id and medias.filename=?',(file.name,))
     elif api_type == "Products":
+        mediatype = "Products"
         c.execute('select posts.post_id,posts.text,medias.link,posts.created_at from products as posts,medias where posts.post_id=medias.post_id and medias.filename=?',(file.name,))
     else: # api_type == "Others"
+        mediatype = "Others"
         c.execute('select posts.post_id,posts.text,medias.link,posts.created_at from others as posts,medias where posts.post_id=medias.post_id and medias.filename=?',(file.name,))
     row=c.fetchone()
     res={}
-    res['title']=str(parent.name)+ ' - '+row[3].strftime('%Y-%m-%d')
+    res['title']=str(parent.name)+ ' - ' +mediatype+ ' - ' +row[3].strftime('%Y-%m-%d')
     res['details']=row[1]
     res['studio']={'name':'OnlyFans','url':'https://www.onlyfans.com/'}
     res['url']='https://www.onlyfans.com/'+str(row[0])+'/'+parent.name
@@ -75,18 +82,23 @@ def lookup_gallery(file,db,parent):
     api_type = str(row[0])
     post_id = str(row[1])
     if api_type == 'Posts':
+        mediatype = "Posts"
         c.execute('select posts.post_id,posts.text,posts.created_at from posts where posts.post_id=?',(post_id,))
     elif api_type == "Stories":
+        mediatype = "Stories"
         c.execute('select posts.post_id,posts.text,posts.created_at from stories as posts where posts.post_id=?',(post_id,))
     elif api_type == "Messages":
+        mediatype = "Messages"
         c.execute('select posts.post_id,posts.text,posts.created_at from messages as posts where posts.post_id=?',(post_id,))
     elif api_type == "Products":
+        mediatype = "Products"
         c.execute('select posts.post_id,posts.text,posts.created_at from products as posts where posts.post_id=?',(post_id,))
     else: # api_type == "Others"
+        mediatype = "Others"
         c.execute('select posts.post_id,posts.text,posts.created_at from others as posts where posts.post_id=?',(post_id,))
     row=c.fetchone()
     res={}
-    res['title']=str(parent.name)+ ' - '+row[2].strftime('%Y-%m-%d')
+    res['title']=str(parent.name)+ ' - ' +mediatype+ ' - ' +row[2].strftime('%Y-%m-%d')
     res['details']=row[1]
     res['studio']={'name':'OnlyFans','url':'https://www.onlyfans.com/'}
     res['url']='https://www.onlyfans.com/'+str(row[0])+'/'+parent.name
