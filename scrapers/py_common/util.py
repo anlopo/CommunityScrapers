@@ -1,8 +1,9 @@
 from functools import reduce
 from typing import Any
+from typing import Union
 
 
-def dig(c: dict | list, *keys: str | int | tuple, default=None) -> Any:
+def dig(c: Union[dict, list], *keys: Union[str, int, tuple], default=None) -> Any:
     """
     Helper function to get a value from a nested dict or list
 
@@ -20,7 +21,7 @@ def dig(c: dict | list, *keys: str | int | tuple, default=None) -> Any:
     'h'
     """
 
-    def inner(d: dict | list, key: str | int | tuple):
+    def inner(d: Union[dict, list], key: Union[str, int, tuple]):
         if isinstance(d, dict):
             if isinstance(key, tuple):
                 for k in key:

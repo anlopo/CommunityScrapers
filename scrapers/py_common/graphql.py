@@ -1,4 +1,5 @@
 import sys
+from typing import Union
 
 try:
     import requests
@@ -25,7 +26,7 @@ except ModuleNotFoundError:
     sys.exit()
 
 
-def callGraphQL(query: str, variables: dict | None = None):
+def callGraphQL(query: str, variables: Union[dict, None]):
     api_key = config.STASH.get("api_key", "")
     url = config.STASH.get("url", "")
     if not url:
@@ -77,7 +78,7 @@ def callGraphQL(query: str, variables: dict | None = None):
     )
 
 
-def configuration() -> dict | None:
+def configuration() -> Union[dict, None]:
     query = """
     query Configuration {
         configuration {
@@ -255,7 +256,7 @@ def configuration() -> dict | None:
     return dig(result, "configuration")
 
 
-def getScene(scene_id: str | int) -> dict | None:
+def getScene(scene_id: Union[str, int]) -> Union[dict, None]:
     query = """
     query FindScene($id: ID!, $checksum: String) {
         findScene(id: $id, checksum: $checksum) {
@@ -466,7 +467,7 @@ def getScene(scene_id: str | int) -> dict | None:
     return dig(result, "findScene")
 
 
-def getSceneScreenshot(scene_id: str | int) -> str | None:
+def getSceneScreenshot(scene_id: Union[str, int]) -> Union[str, None]:
     query = """
     query FindScene($id: ID!, $checksum: String) {
         findScene(id: $id, checksum: $checksum) {
@@ -482,7 +483,7 @@ def getSceneScreenshot(scene_id: str | int) -> str | None:
     return dig(result, "findScene", "paths", "screenshot")
 
 
-def getSceneByPerformerId(performer_id: str | int) -> dict | None:
+def getSceneByPerformerId(performer_id: Union[str, int]) -> Union[dict, None]:
     query = """
 query FindScenes($filter: FindFilterType, $scene_filter: SceneFilterType, $scene_ids: [Int!]) {
           findScenes(filter: $filter, scene_filter: $scene_filter, scene_ids: $scene_ids) {
@@ -760,7 +761,7 @@ query FindScenes($filter: FindFilterType, $scene_filter: SceneFilterType, $scene
     return dig(result, "findScenes")
 
 
-def getSceneIdByPerformerId(performer_id: str | int) -> dict | None:
+def getSceneIdByPerformerId(performer_id: Union[str, int]) -> Union[dict, None]:
     query = """
         query FindScenes($filter: FindFilterType, $scene_filter: SceneFilterType, $scene_ids: [Int!]) {
           findScenes(filter: $filter, scene_filter: $scene_filter, scene_ids: $scene_ids) {
@@ -787,7 +788,7 @@ def getSceneIdByPerformerId(performer_id: str | int) -> dict | None:
     return dig(result, "findScenes")
 
 
-def getPerformersByName(performer_name: str) -> dict | None:
+def getPerformersByName(performer_name: str) -> Union[dict, None]:
     query = """
         query FindPerformers($filter: FindFilterType, $performer_filter: PerformerFilterType) {
           findPerformers(filter: $filter, performer_filter: $performer_filter) {
@@ -865,7 +866,7 @@ def getPerformersByName(performer_name: str) -> dict | None:
     return dig(result, "findPerformers")
 
 
-def getPerformersIdByName(performer_name: str) -> dict | None:
+def getPerformersIdByName(performer_name: str) -> Union[dict, None]:
     query = """
         query FindPerformers($filter: FindFilterType, $performer_filter: PerformerFilterType) {
           findPerformers(filter: $filter, performer_filter: $performer_filter) {
@@ -898,7 +899,7 @@ def getPerformersIdByName(performer_name: str) -> dict | None:
     return dig(result, "findPerformers")
 
 
-def getGallery(gallery_id: str | int) -> dict | None:
+def getGallery(gallery_id: Union[str, int]) -> Union[dict, None]:
     query = """
     query FindGallery($id: ID!) {
         findGallery(id: $id) {
@@ -1127,7 +1128,7 @@ def getGallery(gallery_id: str | int) -> dict | None:
     return dig(result, "findGallery")
 
 
-def getGalleryPath(gallery_id: str | int) -> str | None:
+def getGalleryPath(gallery_id: Union[str, int]) -> Union[str, None]:
     query = """
     query FindGallery($id: ID!) {
         findGallery(id: $id) {
